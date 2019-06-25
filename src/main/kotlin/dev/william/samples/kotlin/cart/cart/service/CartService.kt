@@ -4,6 +4,7 @@ import arrow.core.Try
 import arrow.core.getOrElse
 import dev.william.samples.kotlin.cart.cart.entity.Cart
 import dev.william.samples.kotlin.cart.cart.entity.CartItem
+import dev.william.samples.kotlin.cart.cart.repository.CartItemRepository
 import dev.william.samples.kotlin.cart.cart.repository.CartRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -11,7 +12,15 @@ import java.util.*
 import javax.transaction.Transactional
 
 @Service
-class CartService(val cartRepository: CartRepository) {
+class CartService(
+    val cartRepository: CartRepository,
+    val cartItemRepository: CartItemRepository
+) {
+    fun getCartById(cartId: String): Cart {
+        return cartRepository.findById(cartId)
+            .orElseGet { throw RuntimeException("Cart not found with ID $cartId") }
+    }
+
     @Transactional
     fun getByCustomerId(customerId: String): Cart {
         return Try {
@@ -37,16 +46,19 @@ class CartService(val cartRepository: CartRepository) {
     }
 
     fun deactivateCart(cartId: String): Cart {
-        return cartRepository.getOne(cartId)
-            .apply { active = false }
-            .let { cartRepository.save(it) }
+        return cartRepository.findById(cartId)
+            .map { it.deactivate() }
+            .map { cartRepository.save(it) }
+            .orElseGet { throw RuntimeException("Failed to deactivate cart with ID $cartId") }
     }
 
     @Transactional
-    fun addItemToCustomerCart(customerId: String, item: CartItem) {
-        val cart = getByCustomerId(customerId)
-            .addItem(item.copy(id = UUID.randomUUID().toString(), addedAt = LocalDateTime.now()))
-        cartRepository.save(cart)
+    fun addItemToCustomerCart(customerId: String, item: CartItem): CartItem {
+        return item.apply {
+            id = UUID.randomUUID().toString()
+            addedAt = LocalDateTime.now()
+            cart = getByCustomerId(customerId)
+        }.let { cartItemRepository.save(it) }
     }
 
     private fun deactivateCustomerCarts(customerId: String) {

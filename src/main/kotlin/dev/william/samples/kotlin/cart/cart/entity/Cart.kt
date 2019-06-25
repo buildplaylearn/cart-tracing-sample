@@ -2,8 +2,10 @@ package dev.william.samples.kotlin.cart.cart.entity
 
 import org.jetbrains.annotations.NotNull
 import java.time.LocalDateTime
-import javax.persistence.*
-import javax.persistence.CascadeType.PERSIST
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.OneToMany
 
 @Entity
 data class Cart(
@@ -19,14 +21,11 @@ data class Cart(
     @field:[NotNull Column(name = "active")]
     var active: Boolean? = null,
 
-    @field:[OneToMany(cascade = [PERSIST]) JoinColumn(name = "cart_id")]
-    var items: List<CartItem> = emptyList()
+    @field:OneToMany(mappedBy = "cart")
+    var items: MutableList<CartItem> = mutableListOf()
 ) {
-    fun addItem(item: CartItem): Cart {
-        return this.addItems(listOf(item))
-    }
-
-    private fun addItems(items: List<CartItem>): Cart {
-        return this.also { it.items += items }
+    fun deactivate(): Cart {
+        active = false
+        return this
     }
 }
