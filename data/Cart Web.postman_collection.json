@@ -1,0 +1,163 @@
+{
+	"info": {
+		"_postman_id": "bb06aecc-563f-49d6-8010-12f8285eac6c",
+		"name": "Cart Web",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "Get Cart by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/cart/cdc846b5-c2c7-4efc-bf78-68dd9ba3e6fe",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cart",
+								"cdc846b5-c2c7-4efc-bf78-68dd9ba3e6fe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Cart by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/cart/{{cartId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cart",
+								"{{cartId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customer Cart",
+			"item": [
+				{
+					"name": "Get Customer Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d858c4b7-b882-4fde-b5a1-2e7e09d64006",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"const response = JSON.parse(responseBody);",
+									"tests[\"ID should not be null\"] = response.id !== null;",
+									"",
+									"postman.setGlobalVariable(\"cartId\", response.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/customer/221d4a67-43da-4151-b221-02c9163239a6/cart",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"221d4a67-43da-4151-b221-02c9163239a6",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Customer Cart",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/customer/221d4a67-43da-4151-b221-02c9163239a6/cart",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"221d4a67-43da-4151-b221-02c9163239a6",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Item to Customer Cart",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f5fe54b6-332f-486f-84a9-69de8aea455f",
+								"exec": [
+									"const uuid = require('uuid'); var myUUID = uuid.v4();",
+									"pm.environment.set(\"uuid\", uuid);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"item_id\": \"{{$guid}}\",\n\t\"quantity\": 1\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/customer/221d4a67-43da-4151-b221-02c9163239a6/cart",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"221d4a67-43da-4151-b221-02c9163239a6",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
