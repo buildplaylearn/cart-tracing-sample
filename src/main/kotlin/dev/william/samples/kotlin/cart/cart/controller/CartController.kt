@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.*
 class CartController(val cartService: CartService) {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun getCustomerCart(@PathVariable cartId: String): Cart {
+    fun getCustomerCart(@PathVariable cartId: String, @RequestHeader("x-zup-circle-id", required = true) circleId: String): Cart {
+        println("Circle ID is $circleId")
         return cartService.getCartById(cartId)
     }
 

@@ -49,16 +49,6 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.opentracing.contrib</groupId>
-            <artifactId>opentracing-spring-jaeger-web-starter</artifactId>
-            <version>2.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.opentracing.contrib</groupId>
-            <artifactId>opentracing-spring-cloud-starter</artifactId>
-            <version>0.3.2</version>
-        </dependency>
 
         <dependency>
             <groupId>io.arrow-kt</groupId>
@@ -89,11 +79,25 @@
         </dependency>
 
         <dependency>
+            <groupId>br.com.zup.tracing</groupId>
+            <artifactId>zup-tracing</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>rw-nexus-release</id>
+            <name>Zup Nexus Release Repository</name>
+            <url>https://repo.zup.com.br/repository/rw-jars-all/</url>
+        </repository>
+    </repositories>
 
     <build>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
